@@ -1,0 +1,76 @@
+Sub Copy_File_As_Text_with_LineBreak()
+
+Dim strFolderPath As String
+Dim SelectedFile As String
+Dim iFileNum As Integer
+Dim strFileName As String
+Dim iFileName As String
+
+'Go to the folder of this file and take the path
+
+strFolderPath = ThisWorkbook.Path
+
+ChDrive strFolderPath
+ChDir strFolderPath
+
+
+'Select a single file. If multiple files then MultiSelect:=True
+
+SelectedFile = Application.GetOpenFilename( _
+                filefilter:="Csv Files(*.csv),*.csv", MultiSelect:=False)
+
+    
+    Dim line As String
+    Dim FSO As Object
+    Dim f1, f2, TS As Object
+    Dim LineElements As Variant
+    Dim Ind As Long
+    Dim strText, newstrText As String
+    Dim c As Variant
+
+    
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    
+    Set f1 = FSO.OpenTextFile(SelectedFile, ForReading)
+    strText = f1.ReadAll
+    
+    newstrText = Replace(Replace(strText, vbCr, "##"), vbLf, "##")
+    
+    newstrText = Replace(Replace(newstrText, """##", """&&"), "&&", vbNewLine)
+    
+    newstrText = Replace(Replace(newstrText, "####", ""), "##", "")
+    
+    f1.Close
+    Set f2 = FSO.OpenTextFile(SelectedFile, ForWriting)
+    f2.Write newstrText
+
+    f2.Close
+
+    Set TS = FSO.OpenTextFile(SelectedFile)
+    
+    If Not TS.AtEndOfStream Then TS.SkipLine
+    Ind = 2  
+    
+    Do While TS.AtEndOfStream = False
+        line = TS.ReadLine
+        LineElements = Split(Replace(Replace(line, ";""", "###"), """", ""), "###")
+        
+        If UBound(LineElements) < 1 Then
+           Exit Do
+        End If   ' This if-condition is checking meta data at the end
+        
+        If SelectedFile Like "*Name of The File*" Then
+            ThisWorkbook.Worksheets("WorkshetName").Range("A" & Ind, "J" & Ind).Value = LineElements
+        
+        End If
+
+        
+        Ind = Ind + 1
+    
+    Loop
+    
+    
+    TS.Close
+    Set TS = Nothing
+    Set FSO = Nothing
+End Sub
