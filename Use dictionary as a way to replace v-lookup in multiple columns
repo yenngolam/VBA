@@ -1,0 +1,68 @@
+First of all, create a class:
+classname: clsParent
+Public ParentID As String
+Public ParentName As String
+Public Hotspot As String
+
+** Create the dictionary**
+
+Public dict_parent As Object
+
+Sub dictionary_hierarchy()
+
+  Dim last_row_CP As Long
+  Dim i As Long
+  Dim ID As String
+  Dim parent As ClsParent
+
+  last_row_CP = Worksheets("WorksheetName").Range("A" & Rows.Count).End(xlUp).Row
+
+  Set dict_parent = CreateObject("Scripting.Dictionary")
+
+  For i = 2 To last_row_CP
+  
+      ID = Worksheets("WorksheetName").Range("A" & i).Value
+  
+      If dict_parent.Exists(ID) = False Then
+          Set parent = New ClsParent
+
+          parent.ParentID = Worksheets("Child n Parents").Range("C" & i).Value
+          parent.ParentName = Worksheets("Child n Parents").Range("D" & i).Value
+          parent.Hotspot = Worksheets("Child n Parents").Range("E" & i).Value
+          
+          
+          dict_parent.Add ID, Item:=parent
+      
+      End If
+  
+  Next
+End Sub
+
+** Use the dictionary to v-lookup. This dictionary could be used for multiple times**
+
+Sub Use-Dictionary()
+
+  Dim last_row_DI As Long
+  Dim DI as string
+  Dim h as integer
+  Dim parent As ClsParent
+  
+  last_row_DI = Worksheets("WorkshetName").Range("A" & Rows.Count).End(xlUp).Row
+  Call dictionary_hierarchy
+      
+      With ThisWorkbook.Worksheets("WorksheetName")
+      
+          For h = 2 To last_row_DI
+              
+              ID = .Range("F" & h).Value
+              
+              If dict_parent.Exists(ID) Then
+                  .Range("O" & h).Value = dict_parent(ID).ParentID
+                  .Range("P" & h).Value = dict_parent(ID).ParentName
+              
+              End If
+                  
+          Next
+  
+      End With
+End Sub
