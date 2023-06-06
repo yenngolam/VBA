@@ -1,0 +1,35 @@
+Sub Copy_Data()
+    
+    Dim last_row_Dump As Long
+    Dim first_row_this_month_Dump As Long
+    Dim DeliveryReference, Reference, IssueDate, Info As Range
+    Dim CurrentLastRow, WhichRowToPaste As Long  
+ 
+    last_row_Dump = Worksheets("Dump").Range("A" & Rows.Count).End(xlUp).Row
+    first_row_this_month_Dump = Worksheets("Dump").Range("A" & last_row_Dump).End(xlUp).Row
+            
+    
+            With ThisWorkbook.Worksheets("Dump")
+                
+                Set DeliveryReference = .Range("A" & first_row_this_month_Dump, "B" & last_row_Dump)
+                Set Reference = .Range("C" & first_row_this_month_Dump, "C" & last_row_Dump)
+                Set IssueDate = .Range("D" & first_row_this_month_Dump, "D" & last_row_Dump)
+                Set Info = .Range("E" & first_row_this_month_Dump, "K" & last_row_Dump)
+
+            End With
+
+            
+            With ThisWorkbook.Worksheets("Final report")
+            
+            CurrentLastRow = ThisWorkbook.Worksheets("Final report").Range("A" & Rows.Count).End(xlUp).Row
+            WhichRowToPaste = CurrentLastRow + 1
+                
+                .Range("A" & WhichRowToPaste).Resize(last_row_Dump - first_row_this_month_Dump + 1, 2) = DeliveryReference.Value
+                .Range("D" & WhichRowToPaste).Resize(last_row_Dump - first_row_this_month_Dump + 1, 1) = Reference.Value
+                .Range("G" & WhichRowToPaste).Resize(last_row_Dump - first_row_this_month_Dump + 1, 1) = IssueDate.Value
+                .Range("H" & WhichRowToPaste).Resize(last_row_Dump - first_row_this_month_Dump + 1, 7) = Info.Value
+                
+            End With
+            
+        End Sub
+    
