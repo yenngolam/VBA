@@ -1,0 +1,11 @@
+** Read csv as text**
+** Create the function**
+Function convDate(str As String) As Date
+  Dim day As Integer, month As Integer, year As Integer
+  year = Int(Right(str, 4))
+  month = Int(Mid(str, 4, 2))
+  day = Int(Left(str, 2))
+  convDate = DateSerial(year, month, day)
+End Function
+** How to use the function**
+ Worksheets(1).Range("A1").Value = convDate(Worksheets(1).Range("A1").Value)
