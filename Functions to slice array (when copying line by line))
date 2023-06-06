@@ -1,0 +1,29 @@
+Function Slice(Arr As Variant, Optional ColRange As String = "")
+    Dim i As Long, j As Long, cmin As Long, cmax As Long
+    Dim n As Long
+    Dim S As Variant, Dims As Variant
+    Dim str, str2 As String
+    
+    On Error Resume Next
+
+    If Len(ColRange) > 0 Then
+        Dims = Split(ColRange, ":")
+        cmin = Dims(0)
+        cmax = Dims(1)
+    Else
+        cmin = 1
+        cmax = UBound(Arr, 2)
+
+    End If
+
+    n = cmax - cmin + 1
+
+    ReDim S(1 To n)
+    For i = 1 To n
+   
+            S(i) = Arr(cmin + i - 1)
+  
+    Next i
+
+    Slice = S
+End Function
