@@ -1,0 +1,39 @@
+Sub Dropped_Items()
+
+    Dim last_row_PP As Long
+    Dim last_row_DI As Long
+    Dim a, b As Integer
+    Dim inArray, outArray, findArray As Variant
+    
+
+    last_row_PP = ThisWorkbook.Worksheets("Item_ParentProd").Range("A" & Rows.count).End(xlUp).Row
+    last_row_DI = ThisWorkbook.Worksheets("Dropped_Items").Range("A" & Rows.count).End(xlUp).Row
+    
+    inArray = Range(Worksheets("Item_ParentProd").Cells(1, 1), Worksheets("Item_ParentProd").Cells(last_row_PP, 2))
+    findArray = Range(Worksheets("Dropped_Items").Cells(1, 10), Worksheets("Dropped_Items").Cells(last_row_DI, 10))
+    outArray = Range(Worksheets("Dropped_Items").Cells(1, 11), Worksheets("Dropped_Items").Cells(last_row_DI, 11))
+
+ 
+        For a = 2 To last_row_DI
+            
+            For b = 2 To last_row_PP
+
+                If inArray(b, 1) = findArray(a, 1) Then
+                    outArray(a, 1) = inArray(b, 2)
+                    Exit For
+                End If
+            
+            Next b
+            
+            'Change the date column
+            
+            If (Worksheets("Dropped_Items").Range("H" & a).Value <> "") Then
+                Worksheets("Dropped_Items").Range("H" & a).NumberFormat = "dd/mm/yyyy"
+                Worksheets("Dropped_Items").Range("H" & a).Value = convDate(Worksheets("Dropped_Items").Range("H" & a).Value)
+            End If
+       
+        Next a
+        
+       Range(Worksheets("Dropped_Items").Cells(1, 11), Worksheets("Dropped_Items").Cells(last_row_DI, 11)) = outArray
+     
+     End sub
